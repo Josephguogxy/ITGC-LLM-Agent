@@ -47,7 +47,7 @@ itgc-agent-system/
 
 ## How To Read The Code
 
-1. Start with `src/agent/framework.py` to see the full cycle: ITGC -> Orchestrator -> DSE -> Optimization -> Verification -> HAII -> Execution.
+1. Start with `src/agent/framework.py` to see the full cycle: ITGC -> Orchestrator -> DSE -> Optimization -> Verification -> HCII -> Execution.
 2. Read `src/models/types.py` to understand the long-term plan, bridge variables, short-term decision, and operational state contracts.
 3. Move to `src/models/long_term.py` and `src/optimization/long_term/benders_planner.py` for the long-horizon planning layer.
 4. Then read `src/models/short_term.py`, `src/optimization/builder.py`, and `src/optimization/short_term/admm_dispatch.py` for the short-horizon dispatch logic.
