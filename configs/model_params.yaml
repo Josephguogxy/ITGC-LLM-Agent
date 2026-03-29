@@ -1,0 +1,57 @@
+seed: 42
+num_pdns: 4
+horizon_hours: 24
+step_hours: 1.0
+planning_cycle_days: 7
+representative_days: 3
+scenario_count: 4
+solver:
+  preferred: admm
+  preferred_long_term: benders
+  pyomo_solver: glpk
+  benders_max_iter: 7
+  admm_max_iter: 10
+  admm_rho: 1.0
+  admm_tol: 1.0e-3
+long_term:
+  budget_total: 120.0
+  budget_total_per_pdn: 18.0
+  supply_inadequacy_limit: 3.0
+  renewable_curtailment_ratio_limit: 0.15
+  storage_energy_bounds: [1.6, 7.5]
+  storage_power_bounds: [0.8, 3.2]
+  v2g_participation_bounds: [0.15, 0.95]
+  pdn_import_cap_bounds: [2.0, 8.0]
+  pdn_export_cap_bounds: [0.3, 4.5]
+short_term:
+  battery_charge_eff: 0.95
+  battery_discharge_eff: 0.95
+  ev_charge_eff: 0.93
+  ev_discharge_eff: 0.93
+  battery_soc_min: 0.1
+  battery_soc_max: 0.95
+  ev_soc_min: 0.15
+  ev_soc_max: 0.95
+  reserve_requirement_default: 0.8
+  system_import_cap_default: 22.0
+costs:
+  capital_battery_energy: 4.0
+  capital_battery_power: 2.0
+  capital_v2g_participation: 1.0
+  capital_import_cap: 0.25
+  capital_export_cap: 0.18
+  import_price_weight: 1.0
+  export_price_weight: 1.0
+  curtailment_penalty: 2.0
+  battery_usage_penalty: 0.05
+  v2g_usage_penalty: 0.05
+  load_shedding_penalty: 20.0
+  mobility_shortage_penalty: 8.0
+agent:
+  verification_enabled: true
+  human_gate_enabled: false
+  rollback_enabled: true
+  risk_update_alpha_1: 0.10
+  risk_update_alpha_2: 0.05
+  risk_update_alpha_3: 0.08
+  default_risk_budget: 0.5

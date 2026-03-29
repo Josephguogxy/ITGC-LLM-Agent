@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ITGC Agent System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="page-glow page-glow-a"></div>
+  <div class="page-glow page-glow-b"></div>
+
+  <header class="hero">
+    <div class="eyebrow">Curated Open-Source Export</div>
+    <h1>ITGC Agent System</h1>
+    <p class="hero-copy">
+      A paper-aligned code release focused on the core multi-agent architecture:
+      strategic planning, bridge construction, distributed dispatch, verification,
+      semantic review, and execution feedback.
+    </p>
+    <div class="hero-badges">
+      <span>7-layer closed loop</span>
+      <span>Solver-centered decisions</span>
+      <span>GitHub Pages ready</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="panel intro-panel">
+      <div class="panel-header">
+        <span class="section-tag">Scope</span>
+        <h2>What This Repository Keeps</h2>
+      </div>
+      <div class="scope-grid">
+        <article class="scope-card include">
+          <h3>Included</h3>
+          <ul>
+            <li>Agent roles and the orchestration framework</li>
+            <li>Long-term planning and short-term dispatch models</li>
+            <li>Optimization backends and solver schemas</li>
+            <li>LLM provider abstraction and prompt templates</li>
+            <li>Input contracts and minimal configs</li>
+          </ul>
+        </article>
+        <article class="scope-card exclude">
+          <h3>Excluded</h3>
+          <ul>
+            <li>Experiment runners and batch scripts</li>
+            <li>Paper plotting pipelines and report generators</li>
+            <li>Generated outputs and result folders</li>
+            <li>Streaming demos and publication artifacts</li>
+            <li>Scenario packages that only support experiments</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel flow-panel">
+      <div class="panel-header">
+        <span class="section-tag">Flow</span>
+        <h2>Closed-Loop System Logic</h2>
+      </div>
+      <div class="flow-track">
+        <div class="flow-step">
+          <span class="flow-index">01</span>
+          <h3>ITGC</h3>
+          <p>Updates strategic weights and calls the long-term planner.</p>
+        </div>
+        <div class="flow-step">
+          <span class="flow-index">02</span>
+          <h3>Orchestrator</h3>
+          <p>Records tasks, cycle intent, and rollback triggers.</p>
+        </div>
+        <div class="flow-step">
+          <span class="flow-index">03</span>
+          <h3>DSE</h3>
+          <p>Builds local forecasts and estimated operating states.</p>
+        </div>
+        <div class="flow-step">
+          <span class="flow-index">04</span>
+          <h3>Optimization</h3>
+          <p>Transforms bridge variables into a dispatch problem.</p>
+        </div>
+        <div class="flow-step">
+          <span class="flow-index">05</span>
+          <h3>Verification</h3>
+          <p>Checks network feasibility and rejects unsafe schedules.</p>
+        </div>
+        <div class="flow-step">
+          <span class="flow-index">06</span>
+          <h3>HAII</h3>
+          <p>Injects semantic review and operator-facing reasoning.</p>
+        </div>
+        <div class="flow-step">
+          <span class="flow-index">07</span>
+          <h3>Execution</h3>
+          <p>Applies the accepted action and returns next-cycle state.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel explorer-panel">
+      <div class="panel-header">
+        <span class="section-tag">Code Map</span>
+        <h2>Module Explorer</h2>
+      </div>
+      <div class="explorer-toolbar">
+        <button class="module-tab active" data-target="strategy">Strategy Layer</button>
+        <button class="module-tab" data-target="coordination">Coordination Layer</button>
+        <button class="module-tab" data-target="optimization">Optimization Layer</button>
+        <button class="module-tab" data-target="llm">LLM Layer</button>
+        <button class="module-tab" data-target="contracts">Data Contracts</button>
+      </div>
+      <div class="module-panels">
+        <article class="module-panel active" id="strategy">
+          <h3>`src/agent/itgc_agent.py` + `src/models/long_term.py`</h3>
+          <p>
+            The strategic layer combines long-horizon objective reweighting with the
+            planner wrapper. The main formal planning logic lives in the Benders-style
+            planner under `src/optimization/long_term/`.
+          </p>
+          <ul>
+            <li>Strategic weight updates after each cycle</li>
+            <li>Long-term resource plan generation</li>
+            <li>Cut and iteration summaries for planning history</li>
+          </ul>
+        </article>
+        <article class="module-panel" id="coordination">
+          <h3>`src/agent/framework.py`, `orchestrator_agent.py`, `dse_agent.py`</h3>
+          <p>
+            This layer is the structural backbone of the repository. It threads the
+            long-term plan, bridge variables, local state estimation, review, and feedback
+            into one persistent weekly control loop.
+          </p>
+          <ul>
+            <li>Cycle orchestration and memory</li>
+            <li>Rollback logging and accepted-cycle tracking</li>
+            <li>State carry-over between rolling windows</li>
+          </ul>
+        </article>
+        <article class="module-panel" id="optimization">
+          <h3>`src/optimization/`</h3>
+          <p>
+            The numerical core is split into a problem builder, backend factory, formal
+            long-term planner, and distributed short-term ADMM dispatch backend.
+          </p>
+          <ul>
+            <li>Bridge-to-problem transformation in `builder.py`</li>
+            <li>Distributed dispatch in `short_term/admm_dispatch.py`</li>
+            <li>Heuristic and formal backend compatibility</li>
+          </ul>
+        </article>
+        <article class="module-panel" id="llm">
+          <h3>`src/llm/` + `src/agent/prompts.py`</h3>
+          <p>
+            The semantic layer stays provider-agnostic. Mock mode is preserved for
+            reproducible reading, while OpenAI and Anthropic clients remain optional.
+          </p>
+          <ul>
+            <li>Unified request and response schemas</li>
+            <li>Provider factory for mock and real clients</li>
+            <li>Prompt templates for each agent role</li>
+          </ul>
+        </article>
+        <article class="module-panel" id="contracts">
+          <h3>`src/models/types.py` + `src/data/schemas.py`</h3>
+          <p>
+            These files make the repository readable. They define the objects shared
+            across planning, dispatch, verification, and execution.
+          </p>
+          <ul>
+            <li>`LongTermPlan`, `BridgeVariables`, `ShortTermDecision`</li>
+            <li>`OperationalState` and `CycleFeedback`</li>
+            <li>`TimeStepData` and `StreamingSnapshot` input contracts</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel tree-panel">
+      <div class="panel-header">
+        <span class="section-tag">Tree</span>
+        <h2>Repository Snapshot</h2>
+      </div>
+      <div class="tree-grid">
+        <pre class="tree-block"><code>itgc-agent-system/
++-- configs/
+|   +-- base.yaml
+|   +-- llm_config.yaml
+|   +-- model_params.yaml
+|   `-- runtime.yaml
++-- docs/
+|   +-- index.html
+|   +-- script.js
+|   `-- styles.css
++-- src/
+|   +-- agent/
+|   +-- data/
+|   +-- llm/
+|   +-- models/
+|   +-- optimization/
+|   +-- metrics.py
+|   `-- __init__.py
++-- ARCHITECTURE.md
++-- README.md
+`-- requirements.txt</code></pre>
+        <div class="tree-notes">
+          <h3>Publishing Notes</h3>
+          <p>
+            Upload this folder as a standalone GitHub repository, then enable GitHub Pages
+            from the <code>/docs</code> directory. The page is designed to help readers
+            understand the system before they dig into the source tree.
+          </p>
+          <p>
+            The code export is intentionally opinionated: it foregrounds architecture and
+            control flow, not full experiment reproduction.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./script.js"></script>
+</body>
+</html>

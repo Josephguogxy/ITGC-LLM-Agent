@@ -1,0 +1,23 @@
+seed: 42
+horizon_hours: 24
+step_hours: 1.0
+num_pdns: 3
+num_days: 30
+planning_days_per_cycle: 7
+storage_efficiency_charge: 0.95
+storage_efficiency_discharge: 0.95
+ev_efficiency_charge: 0.93
+ev_efficiency_discharge: 0.93
+penalties:
+  renewable_curtailment: 2.0
+  load_shedding: 20.0
+  battery_usage: 0.05
+  v2g_usage: 0.05
+prices:
+  buy_low: 0.4
+  buy_high: 0.9
+  sell_factor: 0.7
+limits:
+  system_import_cap: 18.0
+  reserve_requirement: 2.0
+outputs_dir: outputs

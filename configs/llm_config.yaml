@@ -1,0 +1,7 @@
+llm:
+  provider: mock
+  mode: mock
+  model: mock-grid-agent-v1
+  temperature: 0.1
+  max_tokens: 2000
+  api_key_env: OPENAI_API_KEY

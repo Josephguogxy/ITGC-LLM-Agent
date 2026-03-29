@@ -1,0 +1,7 @@
+runtime:
+  mode: batch
+  realtime_steps: 96
+  step_minutes: 15
+  rolling_window_min: 60
+  enable_realtime_trace: true
+  operator_default_message: Maintain reliable and economical operation with EV service guarantees.
