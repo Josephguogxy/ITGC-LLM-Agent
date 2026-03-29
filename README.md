@@ -66,10 +66,6 @@ itgc-agent-system/
 
 ## GitHub Pages
 
-The `docs/` folder is ready for GitHub Pages. After uploading this folder as a repository:
-
-1. Open the repository settings on GitHub.
-2. Enable Pages from the `main` branch.
-3. Select the `/docs` folder as the publishing source.
+https://josephguogxy.github.io/ITGC-LLM-Agent/
 
 The resulting site will present the architecture, module map, and curated repository scope.
