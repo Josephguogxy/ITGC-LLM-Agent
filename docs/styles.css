@@ -90,7 +90,7 @@ pre {
 
 .topbar {
   position: sticky;
-  top: 0;
+  top: 0.75rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -98,7 +98,12 @@ pre {
   max-width: 1220px;
   margin: 0 auto;
   padding: 1rem 1.5rem;
+  border: 1px solid rgba(21, 32, 42, 0.08);
+  border-radius: 1.4rem;
+  background: rgba(251, 247, 241, 0.82);
   backdrop-filter: blur(16px);
+  box-shadow: 0 12px 30px rgba(21, 32, 42, 0.08);
+  z-index: 50;
 }
 
 .brand {
@@ -151,7 +156,7 @@ pre {
 .site-shell {
   max-width: 1220px;
   margin: 0 auto;
-  padding: 1rem 1.5rem 4rem;
+  padding: 1.5rem 1.5rem 4rem;
 }
 
 .chapter {
@@ -165,6 +170,7 @@ pre {
   max-width: 1120px;
   margin-left: auto;
   margin-right: auto;
+  scroll-margin-top: 7rem;
 }
 
 .hero {
@@ -173,6 +179,7 @@ pre {
   gap: 1.5rem;
   justify-items: center;
   text-align: center;
+  padding-top: 1.2rem;
 }
 
 .eyebrow,
@@ -193,9 +200,12 @@ pre {
 
 .hero h1 {
   margin: 1rem 0 0;
-  font-size: clamp(3rem, 7vw, 5.4rem);
-  line-height: 0.95;
+  font-size: clamp(2.6rem, 6vw, 4.9rem);
+  line-height: 1.02;
   letter-spacing: -0.05em;
+  max-width: 980px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .lead,
@@ -206,14 +216,18 @@ pre {
 
 .lead {
   max-width: 760px;
-  margin: 1.25rem 0 0;
+  margin: 1.25rem auto 0;
   font-size: 1.08rem;
+  text-align: center;
 }
 
 .hero-copy {
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .hero-badges {
@@ -334,6 +348,7 @@ pre {
   margin: 0;
   font-size: clamp(1.85rem, 4vw, 3rem);
   letter-spacing: -0.04em;
+  text-align: center;
 }
 
 .story-grid,
