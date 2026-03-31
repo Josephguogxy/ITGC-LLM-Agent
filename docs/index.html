@@ -6,222 +6,834 @@
   <title>ITGC Agent System</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-  <div class="page-glow page-glow-a"></div>
-  <div class="page-glow page-glow-b"></div>
+  <div class="page-aurora aurora-a"></div>
+  <div class="page-aurora aurora-b"></div>
+  <div class="page-aurora aurora-c"></div>
 
-  <header class="hero">
-    <div class="eyebrow">Curated Open-Source Export</div>
-    <h1>ITGC Agent System</h1>
-    <p class="hero-copy">
-      A paper-aligned code release focused on the core multi-agent architecture:
-      strategic planning, bridge construction, distributed dispatch, verification,
-      semantic review, and execution feedback.
-    </p>
-    <div class="hero-badges">
-      <span>7-layer closed loop</span>
-      <span>Solver-centered decisions</span>
-      <span>GitHub Pages ready</span>
-    </div>
+  <header class="topbar">
+    <a class="brand" href="#top">
+      <span class="brand-mark">ITGC</span>
+      <span class="brand-copy">Agent System</span>
+    </a>
+    <nav class="nav">
+      <a data-nav href="#overview">Overview</a>
+      <a data-nav href="#modules">Modules</a>
+      <a data-nav href="#runtime">Runtime Chain</a>
+      <a data-nav href="#example">Multi-PDN Example</a>
+      <a data-nav href="#prompts">Prompt Logic</a>
+      <a data-nav href="#memory">Memory Evolution</a>
+      <a data-nav href="#guide">Reader Guide</a>
+    </nav>
   </header>
 
-  <main class="layout">
-    <section class="panel intro-panel">
-      <div class="panel-header">
-        <span class="section-tag">Scope</span>
-        <h2>What This Repository Keeps</h2>
+  <main class="site-shell" id="top">
+    <section class="hero chapter">
+      <div class="hero-copy">
+        <span class="eyebrow">Memory-Centered Long-Short Coordination</span>
+        <h1>ITGC Agent System for DER-Rich Multi-PDN Networks</h1>
+        <p class="lead">
+          This site presents a complete view of the ITGC-based agentic coordination framework:
+          long-horizon planning, bridge-variable generation, orchestrated workflow decomposition,
+          local PDN optimization, verification, human-computer interaction, execution, and
+          persistent memory write-back. The system is designed as a closed-loop operating stack
+          that continuously adapts to renewable variability, EV mobility demand, network stress,
+          and feedback from previous operating cycles.
+        </p>
+        <div class="hero-badges">
+          <span>Long-horizon ITGC planning</span>
+          <span>Benders + ADMM coordination</span>
+          <span>HCII-supervised execution</span>
+          <span>File-backed memory evolution</span>
+        </div>
       </div>
-      <div class="scope-grid">
-        <article class="scope-card include">
-          <h3>Included</h3>
-          <ul>
-            <li>Agent roles and the orchestration framework</li>
-            <li>Long-term planning and short-term dispatch models</li>
-            <li>Optimization backends and solver schemas</li>
-            <li>LLM provider abstraction and prompt templates</li>
-            <li>Input contracts and minimal configs</li>
-          </ul>
+      <div class="hero-panel">
+        <div class="hero-panel-header">
+          <span class="mini-tag">Runtime Snapshot</span>
+          <span class="runtime-label">cycle k</span>
+        </div>
+        <div class="runtime-stack">
+          <div class="runtime-row">
+            <span class="runtime-index">01</span>
+            <div>
+              <strong>Retrieve memory</strong>
+              <p>Load context, policy bias, successful templates, failure warnings, and checkpoints.</p>
+            </div>
+          </div>
+          <div class="runtime-row">
+            <span class="runtime-index">02</span>
+            <div>
+              <strong>Plan + bridge</strong>
+              <p>Update strategic weights and convert long-horizon intent into bridge envelopes.</p>
+            </div>
+          </div>
+          <div class="runtime-row">
+            <span class="runtime-index">03</span>
+            <div>
+              <strong>Dispatch + verify</strong>
+              <p>Coordinate PDN agents, check feasibility, and escalate uncertain cases through HCII.</p>
+            </div>
+          </div>
+          <div class="runtime-row">
+            <span class="runtime-index">04</span>
+            <div>
+              <strong>Execute + learn</strong>
+              <p>Apply the first-step action, observe feedback, and write new knowledge back to disk.</p>
+            </div>
+          </div>
+        </div>
+        <pre class="mini-console"><code>memory_store/agent_memory.json
+Psi_k -> retrieve()
+z_k, Gamma_k -> solve()
+Delta_k -> verify()
+M_k -> write_back()
+Psi_{k+1} = T(Psi_k, M_k)</code></pre>
+      </div>
+    </section>
+    <section class="chapter reveal" id="overview">
+      <div class="section-header">
+        <span class="section-tag">System Overview</span>
+        <h2>What the ITGC agent system does in operation</h2>
+        <p>
+          The framework is organized around one practical goal: keep a network of DER-rich PDNs
+          operating safely and economically under persistent uncertainty. Instead of treating each
+          optimization step as an isolated solve, the system maintains a structured operating memory,
+          translates strategic intent into executable bridge variables, and uses verification plus
+          HCII review to keep decisions aligned with network constraints and service priorities.
+        </p>
+      </div>
+
+      <div class="story-grid">
+        <article class="story-card accent-teal">
+          <h3>Long-short timescale coordination</h3>
+          <p>
+            The ITGC planner reasons at a strategic horizon, while the orchestrator and local PDN
+            stack act at the rolling dispatch horizon. Bridge variables carry long-horizon goals into
+            short-horizon execution without breaking feasibility.
+          </p>
         </article>
-        <article class="scope-card exclude">
-          <h3>Excluded</h3>
-          <ul>
-            <li>Experiment runners and batch scripts</li>
-            <li>Paper plotting pipelines and report generators</li>
-            <li>Generated outputs and result folders</li>
-            <li>Streaming demos and publication artifacts</li>
-            <li>Scenario packages that only support experiments</li>
-          </ul>
+        <article class="story-card accent-amber">
+          <h3>Closed-loop safety control</h3>
+          <p>
+            Verification is not an afterthought. Candidate decisions are checked against operating
+            limits, acceptance rules, and recent failure signals before execution is approved.
+          </p>
+        </article>
+        <article class="story-card accent-blue">
+          <h3>Memory-driven evolution</h3>
+          <p>
+            The system persists successful cycles, failed cycles, context patterns, and workflow
+            checkpoints to file. Future cycles reuse that knowledge to adapt objectives, warm-start
+            dispatch, tighten safety, and avoid repeating known bad decisions.
+          </p>
+        </article>
+      </div>
+
+      <div class="capability-grid">
+        <article class="capability-card">
+          <span class="capability-index">A1</span>
+          <h3>Strategic ITGC planning</h3>
+          <p>Adjusts objective weights, risk posture, and long-horizon resource commitments.</p>
+        </article>
+        <article class="capability-card">
+          <span class="capability-index">A2</span>
+          <h3>Bridge-variable generation</h3>
+          <p>Maps strategic plans into per-PDN envelopes, budgets, and reserve-aware operating bounds.</p>
+        </article>
+        <article class="capability-card">
+          <span class="capability-index">A3</span>
+          <h3>Workflow orchestration</h3>
+          <p>Builds runtime plans, checkpoints, rollback triggers, and multi-agent task order.</p>
+        </article>
+        <article class="capability-card">
+          <span class="capability-index">A4</span>
+          <h3>Distributed dispatch</h3>
+          <p>Solves the short-term coordination problem across PDNs with optimization backends.</p>
+        </article>
+        <article class="capability-card">
+          <span class="capability-index">A5</span>
+          <h3>Verification and HCII review</h3>
+          <p>Checks feasibility, interprets policy, and exposes operator-facing rationale before action.</p>
+        </article>
+        <article class="capability-card">
+          <span class="capability-index">A6</span>
+          <h3>Persistent experience reuse</h3>
+          <p>Writes new outcomes back to memory so the next cycle starts with better context and priors.</p>
         </article>
       </div>
     </section>
-
-    <section class="panel flow-panel">
-      <div class="panel-header">
-        <span class="section-tag">Flow</span>
-        <h2>Closed-Loop System Logic</h2>
+    <section class="chapter reveal" id="modules">
+      <div class="section-header">
+        <span class="section-tag">Module Map</span>
+        <h2>Functional modules and how each one contributes</h2>
+        <p>
+          The codebase is arranged as a readable operating stack. Each module owns a clear role,
+          exposes structured outputs, and interacts with memory in a specific way.
+        </p>
       </div>
-      <div class="flow-track">
-        <div class="flow-step">
-          <span class="flow-index">01</span>
-          <h3>ITGC</h3>
-          <p>Updates strategic weights and calls the long-term planner.</p>
-        </div>
-        <div class="flow-step">
-          <span class="flow-index">02</span>
-          <h3>Orchestrator</h3>
-          <p>Records tasks, cycle intent, and rollback triggers.</p>
-        </div>
-        <div class="flow-step">
-          <span class="flow-index">03</span>
-          <h3>DSE</h3>
-          <p>Builds local forecasts and estimated operating states.</p>
-        </div>
-        <div class="flow-step">
-          <span class="flow-index">04</span>
-          <h3>Optimization</h3>
-          <p>Transforms bridge variables into a dispatch problem.</p>
-        </div>
-        <div class="flow-step">
-          <span class="flow-index">05</span>
-          <h3>Verification</h3>
-          <p>Checks network feasibility and rejects unsafe schedules.</p>
-        </div>
-        <div class="flow-step">
-          <span class="flow-index">06</span>
-          <h3>HCII</h3>
-          <p>Injects semantic review and operator-facing reasoning.</p>
-        </div>
-        <div class="flow-step">
-          <span class="flow-index">07</span>
-          <h3>Execution</h3>
-          <p>Applies the accepted action and returns next-cycle state.</p>
+
+      <div class="tab-row">
+        <button class="tab-button active" data-group="modules" data-target="module-itgc">ITGC Planner</button>
+        <button class="tab-button" data-group="modules" data-target="module-orchestrator">Orchestrator</button>
+        <button class="tab-button" data-group="modules" data-target="module-local">Local PDN Stack</button>
+        <button class="tab-button" data-group="modules" data-target="module-opt">Optimization</button>
+        <button class="tab-button" data-group="modules" data-target="module-verify">Verification</button>
+        <button class="tab-button" data-group="modules" data-target="module-hcii">HCII</button>
+        <button class="tab-button" data-group="modules" data-target="module-memory">Memory Layer</button>
+      </div>
+
+      <div class="tab-panels">
+        <article class="tab-panel active" id="module-itgc" data-group="modules">
+          <div class="panel-grid">
+            <div>
+              <h3>ITGC Planner</h3>
+              <p>
+                The ITGC module maintains the strategic state of the system. It combines current
+                operating intent, historical feedback, and memory-derived policy bias to produce
+                a long-horizon plan that can guide subsequent rolling coordination.
+              </p>
+              <ul class="detail-list">
+                <li><strong>Primary files:</strong> <code>src/agent/itgc_agent.py</code>, <code>src/models/long_term.py</code>, <code>src/optimization/long_term/</code></li>
+                <li><strong>Main outputs:</strong> updated strategic weights, long-horizon plan <code>z_k</code>, planning diagnostics</li>
+                <li><strong>Memory usage:</strong> reads policy memory, accepted cases, failure pressure, and preferred posture</li>
+                <li><strong>Why it matters:</strong> keeps weekly or day-ahead intent coherent even when local conditions change quickly</li>
+              </ul>
+            </div>
+            <aside class="side-note">
+              <span class="mini-tag">Planning Logic</span>
+              <p>
+                ITGC does more than request a solve. It adapts weights, budgets, and risk posture
+                based on what the system learned in previous cycles, then emits a plan that shapes
+                the feasible behavior of downstream PDN agents.
+              </p>
+            </aside>
+          </div>
+        </article>
+
+        <article class="tab-panel" id="module-orchestrator" data-group="modules">
+          <div class="panel-grid">
+            <div>
+              <h3>Orchestrator Scheduler</h3>
+              <p>
+                The orchestrator converts strategic intent into a runtime workflow. It sequences
+                sub-agents, constructs cycle plans, allocates checkpoints, and records rollback
+                triggers that keep the closed loop manageable under stress.
+              </p>
+              <ul class="detail-list">
+                <li><strong>Primary files:</strong> <code>src/agent/orchestrator_agent.py</code>, <code>src/agent/framework.py</code></li>
+                <li><strong>Main outputs:</strong> cycle plan, checkpoint map, task ordering, rollback hints</li>
+                <li><strong>Memory usage:</strong> reads checkpoint history, warm-start availability, and failure tags</li>
+                <li><strong>Why it matters:</strong> it turns the system from a collection of roles into a reliable runtime loop</li>
+              </ul>
+            </div>
+            <aside class="side-note">
+              <span class="mini-tag">Workflow Logic</span>
+              <p>
+                By retaining workflow checkpoints and execution traces, the orchestrator can
+                restart from feasible intermediate states instead of rebuilding the cycle from scratch.
+              </p>
+            </aside>
+          </div>
+        </article>
+
+        <article class="tab-panel" id="module-local" data-group="modules">
+          <div class="panel-grid">
+            <div>
+              <h3>Local PDN Agent Stack</h3>
+              <p>
+                Each PDN is handled through a local stack that updates state estimates, prepares
+                localized forecasts, and translates bridge envelopes into short-term operational
+                variables. This is the layer where local system conditions become executable inputs
+                to optimization and verification.
+              </p>
+              <ul class="detail-list">
+                <li><strong>Primary files:</strong> <code>src/agent/dse_agent.py</code>, <code>src/models/short_term.py</code>, <code>src/models/types.py</code></li>
+                <li><strong>Main outputs:</strong> local state/context, forecasts, dispatch-ready problem inputs</li>
+                <li><strong>Memory usage:</strong> writes current context, alarms, and trigger patterns into state memory</li>
+                <li><strong>Why it matters:</strong> it connects network reality to every later decision in the loop</li>
+              </ul>
+            </div>
+            <aside class="side-note">
+              <span class="mini-tag">Local Adaptation</span>
+              <p>
+                The stack is where heterogeneous PDNs remain distinguishable. Different PV, EV,
+                storage, and demand conditions are preserved instead of being flattened into one aggregate.
+              </p>
+            </aside>
+          </div>
+        </article>
+
+        <article class="tab-panel" id="module-opt" data-group="modules">
+          <div class="panel-grid">
+            <div>
+              <h3>Optimization and Dispatch</h3>
+              <p>
+                The optimization layer transforms bridge variables and local state into a solvable
+                dispatch problem. It supports backend abstraction, warm starts from checkpoint memory,
+                and distributed coordination through ADMM-style consensus updates.
+              </p>
+              <ul class="detail-list">
+                <li><strong>Primary files:</strong> <code>src/optimization/builder.py</code>, <code>src/agent/optimization_agent.py</code>, <code>src/optimization/short_term/admm_dispatch.py</code></li>
+                <li><strong>Main outputs:</strong> short-term decision <code>X_k</code>, convergence traces, backend status</li>
+                <li><strong>Memory usage:</strong> reads checkpoint-derived warm starts and reusable profiles</li>
+                <li><strong>Why it matters:</strong> makes closed-loop coordination computationally practical at multi-PDN scale</li>
+              </ul>
+            </div>
+            <aside class="side-note">
+              <span class="mini-tag">Numerical Core</span>
+              <p>
+                Warm starts and prior feasible patterns help the dispatch layer converge faster and
+                avoid repeating solve trajectories that previously led to failure or rejection.
+              </p>
+            </aside>
+          </div>
+        </article>
+
+        <article class="tab-panel" id="module-verify" data-group="modules">
+          <div class="panel-grid">
+            <div>
+              <h3>Verification Layer</h3>
+              <p>
+                Verification checks whether a proposed first-step action is safe enough to execute.
+                It evaluates network stress, power balance, reserve posture, and acceptance thresholds,
+                then returns a structured decision signal that drives approval or rollback.
+              </p>
+              <ul class="detail-list">
+                <li><strong>Primary files:</strong> <code>src/agent/verification_agent.py</code></li>
+                <li><strong>Main outputs:</strong> acceptance flag, reason codes, violation summary, review package</li>
+                <li><strong>Memory usage:</strong> reads failure memory and policy bias to tighten safety after repeated bad cases</li>
+                <li><strong>Why it matters:</strong> it prevents the system from turning a locally attractive plan into an unsafe execution</li>
+              </ul>
+            </div>
+            <aside class="side-note">
+              <span class="mini-tag">Safety Gate</span>
+              <p>
+                Verification becomes stricter when similar contexts have failed recently, which makes
+                the system genuinely adaptive instead of mechanically repeating the same acceptance rule.
+              </p>
+            </aside>
+          </div>
+        </article>
+
+        <article class="tab-panel" id="module-hcii" data-group="modules">
+          <div class="panel-grid">
+            <div>
+              <h3>HCII Agent</h3>
+              <p>
+                The Human-Computer Interaction Interface agent converts structured cycle outputs into
+                operator-facing rationale, highlights risk, and supports a transparent approval workflow.
+                It is also the point where the LLM can translate machine state into actionable guidance.
+              </p>
+              <ul class="detail-list">
+                <li><strong>Primary files:</strong> <code>src/agent/hcii_agent.py</code>, <code>src/agent/prompts.py</code>, <code>src/llm/</code></li>
+                <li><strong>Main outputs:</strong> operator summary, approval recommendation, explanation package</li>
+                <li><strong>Memory usage:</strong> reads recent accepted and failed cycles to contextualize advice</li>
+                <li><strong>Why it matters:</strong> it makes the agent system interpretable, reviewable, and deployable in supervisory settings</li>
+              </ul>
+            </div>
+            <aside class="side-note">
+              <span class="mini-tag">LLM Interface</span>
+              <p>
+                The HCII layer does not replace optimization. It explains structured outcomes,
+                preserves role boundaries, and helps the human-facing side of the loop remain consistent.
+              </p>
+            </aside>
+          </div>
+        </article>
+
+        <article class="tab-panel" id="module-memory" data-group="modules">
+          <div class="panel-grid">
+            <div>
+              <h3>Memory Layer</h3>
+              <p>
+                The memory system turns the framework into an iterative evolution engine. It stores
+                state/context patterns, policy updates, accepted cases, failure records, and workflow
+                checkpoints on disk and retrieves them at the beginning of each cycle.
+              </p>
+              <ul class="detail-list">
+                <li><strong>Primary files:</strong> <code>src/agent/memory.py</code>, <code>memory_store/agent_memory.json</code></li>
+                <li><strong>Main outputs:</strong> retrieval package, write-back records, updated policy memory</li>
+                <li><strong>Memory usage:</strong> this module is the persistence layer itself</li>
+                <li><strong>Why it matters:</strong> it lets the system improve behavior over time without retraining model weights</li>
+              </ul>
+            </div>
+            <aside class="side-note">
+              <span class="mini-tag">Persistent Knowledge</span>
+              <p>
+                Success memory improves reuse, failure memory improves avoidance, and checkpoint memory
+                improves solver efficiency. Together they make future cycles better prepared from the start.
+              </p>
+            </aside>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="chapter reveal" id="runtime">
+      <div class="section-header">
+        <span class="section-tag">Runtime Chain</span>
+        <h2>The full closed-loop operating logic</h2>
+        <p>
+          A single cycle is not just “plan, solve, act.” It is a structured long-short timescale loop
+          in which memory retrieval, bridge generation, dispatch, safety review, execution, and write-back
+          all influence the next cycle.
+        </p>
+      </div>
+
+      <div class="memory-belt">
+        <article class="memory-node">
+          <h3>State / Context</h3>
+          <p>Historical states, alarms, exogenous context, and trigger patterns.</p>
+        </article>
+        <article class="memory-node">
+          <h3>Policy / Goal</h3>
+          <p>Weights, risk budgets, acceptance thresholds, and preferred posture.</p>
+        </article>
+        <article class="memory-node">
+          <h3>Success Cases</h3>
+          <p>Accepted cycles with feasible plans, bridge variables, and feedback signatures.</p>
+        </article>
+        <article class="memory-node">
+          <h3>Failure / Rollback</h3>
+          <p>Rejected cycles, failure labels, rollback reasons, and future avoidance cues.</p>
+        </article>
+        <article class="memory-node">
+          <h3>Checkpoint / Workflow</h3>
+          <p>Warm starts, feasible checkpoints, solver traces, and runtime templates.</p>
+        </article>
+      </div>
+
+      <div class="chain-grid">
+        <article class="chain-step">
+          <span>01</span>
+          <h3>Retrieve relevant memory</h3>
+          <p>Build the cycle context <code>Psi_k</code> from persistent state, policy, case, and checkpoint memory.</p>
+        </article>
+        <article class="chain-step">
+          <span>02</span>
+          <h3>ITGC planning</h3>
+          <p>Adapt strategic weights <code>w_k</code> and solve the long-horizon planning problem for <code>z_k</code>.</p>
+        </article>
+        <article class="chain-step">
+          <span>03</span>
+          <h3>Update local context</h3>
+          <p>DSE collects rolling operating context, forecasts, and PDN-level stress indicators.</p>
+        </article>
+        <article class="chain-step">
+          <span>04</span>
+          <h3>Generate bridge package</h3>
+          <p>Create <code>Gamma_{n,tau,h}</code> envelopes that carry long-horizon intent into short-horizon decisions.</p>
+        </article>
+        <article class="chain-step">
+          <span>05</span>
+          <h3>Schedule the workflow</h3>
+          <p>The orchestrator determines task order, checkpoints, rollback hooks, and execution tracing.</p>
+        </article>
+        <article class="chain-step">
+          <span>06</span>
+          <h3>Solve distributed dispatch</h3>
+          <p>Optimization agents solve the rolling PDN coordination problem with warm-start-aware backends.</p>
+        </article>
+        <article class="chain-step">
+          <span>07</span>
+          <h3>Verify and review</h3>
+          <p>Verification and HCII interpret feasibility, risk, and operator-facing meaning before action is released.</p>
+        </article>
+        <article class="chain-step">
+          <span>08</span>
+          <h3>Execute and write back</h3>
+          <p>Apply the validated first-step control, observe feedback <code>M_k</code>, and update memory for cycle <code>k+1</code>.</p>
+        </article>
+      </div>
+
+      <div class="explain-grid">
+        <article class="explain-card">
+          <h3>Why bridge variables matter</h3>
+          <p>
+            The bridge package is the contract between strategic planning and rolling control. It
+            keeps local agents aligned with long-horizon resource commitments without forcing them
+            to solve the full strategic problem at every short-term step.
+          </p>
+        </article>
+        <article class="explain-card">
+          <h3>Why verification stays separate</h3>
+          <p>
+            Optimization can produce a mathematically appealing answer that still violates practical
+            safety posture. The verification stage isolates that judgment and lets failure memory
+            dynamically tighten future acceptance conditions.
+          </p>
+        </article>
+        <article class="explain-card">
+          <h3>Why write-back changes future behavior</h3>
+          <p>
+            After every accepted or rejected cycle, the memory system updates what the framework
+            believes about risk, solver initialization, and successful operating patterns. This is
+            the source of the system’s iterative improvement.
+          </p>
+        </article>
+      </div>
+    </section>
+    <section class="chapter reveal" id="example">
+      <div class="section-header">
+        <span class="section-tag">Multi-PDN Example</span>
+        <h2>A complete example of one coordinated operating cycle</h2>
+        <p>
+          The example below illustrates how the closed loop behaves when a network of PDNs faces
+          simultaneous renewable fluctuation and EV-driven demand pressure. The goal is to show how
+          the modules cooperate in sequence, not just what files exist.
+        </p>
+      </div>
+
+      <div class="scenario-banner">
+        <span>8 PDNs</span>
+        <span>15-min dispatch interval</span>
+        <span>60-min rolling horizon</span>
+        <span>PV drop + EV surge + import stress</span>
+      </div>
+
+      <div class="example-grid">
+        <article class="scenario-sheet">
+          <h3>Representative network state</h3>
+          <div class="scenario-block">
+            <strong>PDN-2</strong>
+            <p>High EV departure demand, moderate storage state, rising local price exposure.</p>
+          </div>
+          <div class="scenario-block">
+            <strong>PDN-4</strong>
+            <p>Sharp PV reduction, import dependency increasing, bridge reserve close to lower bound.</p>
+          </div>
+          <div class="scenario-block">
+            <strong>PDN-6</strong>
+            <p>V2G-capable EV fleet available, fast response potential, good candidate for flexibility support.</p>
+          </div>
+          <div class="scenario-block">
+            <strong>System-level stress</strong>
+            <p>Net load ramps upward, aggregate import envelope tightens, and verification must guard against overdraw.</p>
+          </div>
+        </article>
+
+        <div class="example-walkthrough">
+          <div class="tab-row compact">
+            <button class="tab-button active" data-group="example" data-target="example-retrieve">Retrieve</button>
+            <button class="tab-button" data-group="example" data-target="example-plan">Plan</button>
+            <button class="tab-button" data-group="example" data-target="example-bridge">Bridge</button>
+            <button class="tab-button" data-group="example" data-target="example-dispatch">Dispatch</button>
+            <button class="tab-button" data-group="example" data-target="example-verify">Verify</button>
+            <button class="tab-button" data-group="example" data-target="example-execute">Execute</button>
+            <button class="tab-button" data-group="example" data-target="example-writeback">Write-back</button>
+          </div>
+
+          <div class="tab-panels">
+            <article class="tab-panel active" id="example-retrieve" data-group="example">
+              <h3>Step 1. Retrieve relevant operating memory</h3>
+              <p>
+                The cycle begins by loading file-backed memory. The framework checks whether similar
+                high-ramp contexts recently succeeded, whether failures occurred under tight import
+                conditions, and whether a feasible checkpoint exists for a comparable dispatch profile.
+              </p>
+              <pre><code>{
+  "context_match": "renewable_drop + ev_surge",
+  "failure_pressure": 0.18,
+  "success_credit": 0.62,
+  "warm_start_available": true
+}</code></pre>
+            </article>
+
+            <article class="tab-panel" id="example-plan" data-group="example">
+              <h3>Step 2. Update strategic plan</h3>
+              <p>
+                ITGC adjusts the objective vector toward resilience and peak-shaving because the
+                retrieved context indicates higher ramp stress. It then produces a long-horizon plan
+                that slightly increases reserve posture while preserving EV service quality.
+              </p>
+              <pre><code>{
+  "weights": {"cost": 0.31, "resilience": 0.34, "service": 0.20, "carbon": 0.15},
+  "plan_summary": {"reserve_bias": 0.07, "target_import_cap": 18.4}
+}</code></pre>
+            </article>
+
+            <article class="tab-panel" id="example-bridge" data-group="example">
+              <h3>Step 3. Build per-PDN bridge envelopes</h3>
+              <p>
+                The strategic plan is translated into bridge variables so that each PDN receives an
+                executable envelope for import, storage usage, V2G support, and reserve contribution.
+                This is how strategic intent becomes operational structure.
+              </p>
+              <pre><code>{
+  "PDN-2": {"import_cap": 3.6, "battery_floor": 0.28},
+  "PDN-4": {"import_cap": 2.9, "shed_penalty": 9.5},
+  "PDN-6": {"v2g_support": 1.4, "reserve_obligation": 0.5}
+}</code></pre>
+            </article>
+
+            <article class="tab-panel" id="example-dispatch" data-group="example">
+              <h3>Step 4. Coordinate distributed dispatch</h3>
+              <p>
+                The orchestrator launches the local PDN stack and optimization layer. The solver
+                reuses a checkpoint-derived warm start, which helps the ADMM consensus variables move
+                toward a feasible coordinated schedule more quickly.
+              </p>
+              <pre><code>{
+  "backend": "admm_dispatch",
+  "warm_start": true,
+  "iterations": 18,
+  "first_step_grid_buy": 12.7
+}</code></pre>
+            </article>
+
+            <article class="tab-panel" id="example-verify" data-group="example">
+              <h3>Step 5. Verify and review</h3>
+              <p>
+                Verification checks line stress, power balance, and acceptance thresholds. HCII then
+                summarizes the risk and explains why the recommended first-step action is acceptable.
+              </p>
+              <pre><code>{
+  "accepted": true,
+  "violations": [],
+  "review_note": "Use PDN-6 V2G support to relieve ramp stress while keeping EV mobility above target."
+}</code></pre>
+            </article>
+
+            <article class="tab-panel" id="example-execute" data-group="example">
+              <h3>Step 6. Execute the validated first step</h3>
+              <p>
+                Only the first-step control is executed. This preserves the rolling nature of the
+                loop and lets the framework re-evaluate the system after fresh measurements arrive.
+              </p>
+              <pre><code>{
+  "execution": "released",
+  "applied_control": {"grid_buy": 12.7, "battery_discharge": 4.1, "v2g_discharge": 1.3},
+  "observed_feedback": {"served_ratio": 0.996, "price_realization": 1.08}
+}</code></pre>
+            </article>
+
+            <article class="tab-panel" id="example-writeback" data-group="example">
+              <h3>Step 7. Write back accepted experience</h3>
+              <p>
+                The cycle feedback becomes reusable operating knowledge. Policy memory is updated,
+                the accepted case is stored, and the workflow checkpoint is refreshed so the next
+                cycle can start from a stronger prior.
+              </p>
+              <pre><code>{
+  "write_back": {
+    "accepted_case": true,
+    "policy_update": {"acceptance_threshold": 0.92},
+    "checkpoint_saved": "dispatch_profile_8pdn_high_ramp"
+  }
+}</code></pre>
+            </article>
+          </div>
         </div>
       </div>
     </section>
+    <section class="chapter reveal" id="prompts">
+      <div class="section-header">
+        <span class="section-tag">Prompt Logic</span>
+        <h2>How prompts guide the LLM inside the closed loop</h2>
+        <p>
+          The prompt layer is written to keep the LLM useful inside an operational system. Instead
+          of open-ended conversation, each role receives grounded inputs, explicit reasoning goals,
+          hard safety constraints, and a machine-readable output contract.
+        </p>
+      </div>
 
-    <section class="panel explorer-panel">
-      <div class="panel-header">
-        <span class="section-tag">Code Map</span>
-        <h2>Module Explorer</h2>
+      <div class="principle-grid">
+        <article class="principle-card">
+          <h3>Role boundary</h3>
+          <p>Each agent prompt defines what the role is allowed to interpret and what it must leave to solvers or verification.</p>
+        </article>
+        <article class="principle-card">
+          <h3>Input grounding</h3>
+          <p>Prompts operate on explicit system state, bridge variables, memory retrieval, and feedback summaries.</p>
+        </article>
+        <article class="principle-card">
+          <h3>Safety priority</h3>
+          <p>Prompts state that feasibility, policy compliance, and risk management outrank narrative fluency.</p>
+        </article>
+        <article class="principle-card">
+          <h3>Structured output</h3>
+          <p>Every response is constrained into exact keys so downstream code can consume it deterministically.</p>
+        </article>
       </div>
-      <div class="explorer-toolbar">
-        <button class="module-tab active" data-target="strategy">Strategy Layer</button>
-        <button class="module-tab" data-target="coordination">Coordination Layer</button>
-        <button class="module-tab" data-target="optimization">Optimization Layer</button>
-        <button class="module-tab" data-target="llm">LLM Layer</button>
-        <button class="module-tab" data-target="contracts">Data Contracts</button>
+
+      <div class="prompt-shell">
+        <div>
+          <h3>Shared prompt shell</h3>
+          <p>
+            Across ITGC, Orchestrator, DSE, Optimization, Verification, HCII, and Execution, the
+            prompts follow one consistent pattern. That consistency is what lets the LLM cooperate
+            with the rest of the code rather than floating outside the runtime loop.
+          </p>
+        </div>
+        <pre><code>Mission:
+  Define the role-specific objective for this cycle.
+
+Current inputs:
+  Summarize the state, memory retrieval, bridge variables,
+  solver signals, and policy context available to this role.
+
+Reasoning requirements:
+  State the exact operational questions the role must answer.
+
+Hard constraints:
+  Prioritize safety, consistency, and valid structured output.
+
+Return JSON with exactly these keys:
+  A stable schema that downstream code can parse directly.</code></pre>
       </div>
-      <div class="module-panels">
-        <article class="module-panel active" id="strategy">
-          <h3>`src/agent/itgc_agent.py` + `src/models/long_term.py`</h3>
-          <p>
-            The strategic layer combines long-horizon objective reweighting with the
-            planner wrapper. The main formal planning logic lives in the Benders-style
-            planner under `src/optimization/long_term/`.
-          </p>
-          <ul>
-            <li>Strategic weight updates after each cycle</li>
-            <li>Long-term resource plan generation</li>
-            <li>Cut and iteration summaries for planning history</li>
-          </ul>
+
+      <div class="prompt-role-grid">
+        <article class="prompt-role-card">
+          <h3>ITGC Prompt</h3>
+          <p>Transforms memory and operating intent into strategic weight shifts, planning posture, and risk-aware planning cues.</p>
         </article>
-        <article class="module-panel" id="coordination">
-          <h3>`src/agent/framework.py`, `orchestrator_agent.py`, `dse_agent.py`</h3>
-          <p>
-            This layer is the structural backbone of the repository. It threads the
-            long-term plan, bridge variables, local state estimation, review, and feedback
-            into one persistent weekly control loop.
-          </p>
-          <ul>
-            <li>Cycle orchestration and memory</li>
-            <li>Rollback logging and accepted-cycle tracking</li>
-            <li>State carry-over between rolling windows</li>
-          </ul>
+        <article class="prompt-role-card">
+          <h3>Orchestrator Prompt</h3>
+          <p>Generates cycle plans, checkpoint actions, rollback readiness, and task ordering for the current runtime context.</p>
         </article>
-        <article class="module-panel" id="optimization">
-          <h3>`src/optimization/`</h3>
-          <p>
-            The numerical core is split into a problem builder, backend factory, formal
-            long-term planner, and distributed short-term ADMM dispatch backend.
-          </p>
-          <ul>
-            <li>Bridge-to-problem transformation in `builder.py`</li>
-            <li>Distributed dispatch in `short_term/admm_dispatch.py`</li>
-            <li>Heuristic and formal backend compatibility</li>
-          </ul>
+        <article class="prompt-role-card">
+          <h3>DSE Prompt</h3>
+          <p>Structures state estimation, forecast interpretation, and context updates for each PDN before optimization.</p>
         </article>
-        <article class="module-panel" id="llm">
-          <h3>`src/llm/` + `src/agent/prompts.py`</h3>
-          <p>
-            The semantic layer stays provider-agnostic. Mock mode is preserved for
-            reproducible reading, while OpenAI and Anthropic clients remain optional.
-          </p>
-          <ul>
-            <li>Unified request and response schemas</li>
-            <li>Provider factory for mock and real clients</li>
-            <li>Prompt templates for each agent role</li>
-          </ul>
+        <article class="prompt-role-card">
+          <h3>Optimization Prompt</h3>
+          <p>Explains backend choice, dispatch priorities, and solver-facing reasoning under bridge and memory constraints.</p>
         </article>
-        <article class="module-panel" id="contracts">
-          <h3>`src/models/types.py` + `src/data/schemas.py`</h3>
-          <p>
-            These files make the repository readable. They define the objects shared
-            across planning, dispatch, verification, and execution.
-          </p>
-          <ul>
-            <li>`LongTermPlan`, `BridgeVariables`, `ShortTermDecision`</li>
-            <li>`OperationalState` and `CycleFeedback`</li>
-            <li>`TimeStepData` and `StreamingSnapshot` input contracts</li>
-          </ul>
+        <article class="prompt-role-card">
+          <h3>Verification Prompt</h3>
+          <p>Produces an acceptance decision, reason codes, and risk interpretation with failure-aware safety posture.</p>
+        </article>
+        <article class="prompt-role-card">
+          <h3>HCII Prompt</h3>
+          <p>Converts operational outcomes into operator-facing guidance and approval language that stays aligned with system state.</p>
         </article>
       </div>
     </section>
-
-    <section class="panel tree-panel">
-      <div class="panel-header">
-        <span class="section-tag">Tree</span>
-        <h2>Repository Snapshot</h2>
+    <section class="chapter reveal" id="memory">
+      <div class="section-header">
+        <span class="section-tag">Memory Evolution</span>
+        <h2>How persistent memory makes the system smarter over time</h2>
+        <p>
+          The memory layer does not just archive past runs. It stores reusable operating knowledge
+          that directly changes future planning, dispatch, verification, and workflow orchestration.
+          This is what gives the framework iterative improvement without changing model weights.
+        </p>
       </div>
-      <div class="tree-grid">
-        <pre class="tree-block"><code>itgc-agent-system/
-+-- configs/
-|   +-- base.yaml
-|   +-- llm_config.yaml
-|   +-- model_params.yaml
-|   `-- runtime.yaml
-+-- docs/
-|   +-- index.html
-|   +-- script.js
-|   `-- styles.css
-+-- src/
-|   +-- agent/
-|   +-- data/
-|   +-- llm/
-|   +-- models/
-|   +-- optimization/
-|   +-- metrics.py
-|   `-- __init__.py
-+-- ARCHITECTURE.md
-+-- README.md
-`-- requirements.txt</code></pre>
-        <div class="tree-notes">
-          <h3>Publishing Notes</h3>
+
+      <div class="memory-grid">
+        <article class="memory-card">
+          <h3>State &amp; Context Memory</h3>
+          <p>Historical states, exogenous signals, trigger patterns, alarms, and recent operating context.</p>
+        </article>
+        <article class="memory-card">
+          <h3>Policy &amp; Goal Memory</h3>
+          <p>Objective weights, acceptance thresholds, reserve bias, risk posture, and strategic preferences.</p>
+        </article>
+        <article class="memory-card">
+          <h3>Accepted Case Memory</h3>
+          <p>Successful <code>{X_k, z_k, Gamma_k, M_k}</code> cycles that can be reused as reference patterns.</p>
+        </article>
+        <article class="memory-card">
+          <h3>Failure &amp; Rollback Memory</h3>
+          <p>Rejected decisions, failure labels, unsafe signatures, and rollback reasons that inform future avoidance.</p>
+        </article>
+        <article class="memory-card">
+          <h3>Workflow &amp; Checkpoint Memory</h3>
+          <p>Feasible checkpoints, warm starts, solver traces, and runtime templates for faster future coordination.</p>
+        </article>
+      </div>
+
+      <div class="evolution-band">
+        <article class="evolution-card">
+          <span class="mini-tag">Success-driven evolution</span>
+          <h3>Reuse what worked</h3>
+          <p>Accepted cases improve future bridge design, solver initialization, and strategy selection.</p>
+        </article>
+        <article class="evolution-card">
+          <span class="mini-tag">Failure-driven evolution</span>
+          <h3>Avoid what failed</h3>
+          <p>Failure records tighten verification and discourage future plans that resemble known bad contexts.</p>
+        </article>
+        <article class="evolution-card">
+          <span class="mini-tag">Workflow-driven evolution</span>
+          <h3>Start from better checkpoints</h3>
+          <p>Checkpoint memory accelerates repeated coordination by preserving feasible solver and workflow states.</p>
+        </article>
+      </div>
+
+      <div class="memory-file-panel">
+        <div>
+          <h3>File-backed memory in the running system</h3>
           <p>
-            Upload this folder as a standalone GitHub repository, then enable GitHub Pages
-            from the <code>/docs</code> directory. The page is designed to help readers
-            understand the system before they dig into the source tree.
-          </p>
-          <p>
-            The code export is intentionally opinionated: it foregrounds architecture and
-            control flow, not full experiment reproduction.
+            Memory is stored in a persistent JSON file so knowledge survives across runs. The framework
+            reads it at cycle start and writes to it after context observation, accepted execution,
+            rejected execution, and checkpoint updates.
           </p>
         </div>
+        <pre><code>{
+  "cycle_index": 12,
+  "policy_memory": {
+    "weights": {"cost": 0.30, "resilience": 0.33, "service": 0.22, "carbon": 0.15},
+    "acceptance_threshold": 0.92
+  },
+  "accepted_cases": [...],
+  "failure_cases": [...],
+  "workflow_checkpoints": [...]
+}</code></pre>
+      </div>
+    </section>
+    <section class="chapter reveal" id="guide">
+      <div class="section-header">
+        <span class="section-tag">Reader Guide</span>
+        <h2>Recommended way to read and extend the system</h2>
+        <p>
+          If you are opening the repository for the first time, the sequence below gives the fastest
+          path to understanding both the code and the operating logic.
+        </p>
+      </div>
+
+      <div class="guide-grid">
+        <article class="guide-card">
+          <span>01</span>
+          <h3>Read the framework first</h3>
+          <p>Start with <code>src/agent/framework.py</code> to understand the cycle-level orchestration and write-back points.</p>
+        </article>
+        <article class="guide-card">
+          <span>02</span>
+          <h3>Follow the strategic layer</h3>
+          <p>Inspect <code>itgc_agent.py</code> and the long-term planner to see how memory alters planning posture.</p>
+        </article>
+        <article class="guide-card">
+          <span>03</span>
+          <h3>Trace bridge to dispatch</h3>
+          <p>Read <code>builder.py</code> and <code>admm_dispatch.py</code> to see how bridge envelopes become numerical decisions.</p>
+        </article>
+        <article class="guide-card">
+          <span>04</span>
+          <h3>Inspect the safety loop</h3>
+          <p>Move through <code>verification_agent.py</code>, <code>hcii_agent.py</code>, and the execution stage to understand acceptance control.</p>
+        </article>
+        <article class="guide-card">
+          <span>05</span>
+          <h3>Study the prompts</h3>
+          <p>Open <code>src/agent/prompts.py</code> to see how the LLM is grounded into structured, role-specific instructions.</p>
+        </article>
+        <article class="guide-card">
+          <span>06</span>
+          <h3>Inspect persistent memory</h3>
+          <p>Review <code>src/agent/memory.py</code> and <code>memory_store/agent_memory.json</code> to understand iterative evolution.</p>
+        </article>
       </div>
     </section>
   </main>
+
+  <footer class="footer">
+    <p>
+      ITGC Agent System documentation site for long-short timescale closed-loop coordination in DER-rich multi-PDN networks.
+    </p>
+  </footer>
 
   <script src="./script.js"></script>
 </body>

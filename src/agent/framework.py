@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 from typing import Dict, Any
 
 from src.agent.itgc_agent import ITGCAgent
@@ -8,26 +7,13 @@ from src.agent.orchestrator_agent import OrchestratorAgent
 from src.agent.dse_agent import DSEAgent
 from src.agent.optimization_agent import OptimizationAgent
 from src.agent.verification_agent import VerificationAgent
-from src.agent.haii_agent import HAIIAgent
+from src.agent.hcii_agent import HCIIAgent
+from src.agent.memory import AgentMemorySystem
 from src.agent.execution_agent import ExecutionAgent
 from src.models.types import BridgeVariables, CycleFeedback, OperationalState, ShortTermDecision
 from src.models.short_term import ShortTermDispatcher
 from src.llm import LLMService
 from src.metrics import Metrics
-
-
-@dataclass
-class AgentMemory:
-    accepted_cycles: int = 0
-    rejected_cycles: int = 0
-    rollback_history: list | None = None
-    planning_history: list | None = None
-
-    def __post_init__(self):
-        if self.rollback_history is None:
-            self.rollback_history = []
-        if self.planning_history is None:
-            self.planning_history = []
 
 
 class ITGCAgentSystem:
@@ -39,10 +25,10 @@ class ITGCAgentSystem:
         self.dse = DSEAgent(config)
         self.optimizer = OptimizationAgent(config, self.llm)
         self.verifier = VerificationAgent(config, self.llm)
-        self.haii = HAIIAgent(config, self.llm)
+        self.hcii = HCIIAgent(config, self.llm)
         self.executor = ExecutionAgent(config)
         self.dispatcher = ShortTermDispatcher(config)
-        self.memory = AgentMemory()
+        self.memory = AgentMemorySystem(config, initial_weights=self.itgc.state.weight_vector)
 
     def run_cycle(
         self,
@@ -54,44 +40,95 @@ class ITGCAgentSystem:
         plan_override=None,
         plan_obj_override=None,
     ) -> dict:
+        cycle_id = self.memory.begin_cycle()
         num_pdns = len(day_data)
         horizon = len(next(iter(day_data.values())))
+        planning_memory = self.memory.retrieve_context()
         if plan_override is None:
-            plan, plan_obj = self.itgc.plan(num_pdns, scenario_bundle=planning_bundle)
-            self.memory.planning_history.append(
-                {
-                    'plan_objective': getattr(plan_obj, 'total_cost', None),
-                    'benders_iterations': getattr(plan_obj, 'benders_iterations', 0),
-                    'cut_count': getattr(plan_obj, 'cut_count', 0),
-                }
-            )
+            plan, plan_obj = self.itgc.plan(num_pdns, scenario_bundle=planning_bundle, memory_context=planning_memory)
         else:
             plan = plan_override
             plan_obj = plan_obj_override
         states = initial_states or self._initial_states(plan, num_pdns)
         local_states = {n: self.dse.update(n, series, current_state=states[n]) for n, series in day_data.items()}
+        self.memory.observe_state_context(
+            cycle_id=cycle_id,
+            dse_outputs=local_states,
+            operator_message=operator_message,
+            runtime_mode=runtime_mode,
+        )
+        memory_context = self.memory.retrieve_context()
         self.orchestrator.log_task('long_term_planning', {'num_pdns': num_pdns})
         orchestration_plan = self.orchestrator.build_plan(
             {'plan_objective': getattr(plan_obj, 'total_cost', None)},
             num_pdns,
             horizon,
             runtime_mode=runtime_mode,
+            memory_context=memory_context,
         )
-        bridge = self._build_bridge(plan, states, local_states, horizon)
+        bridge = self._build_bridge(plan, states, local_states, horizon, memory_context=memory_context)
         self.orchestrator.log_task('state_estimation', {'pdns': list(local_states.keys())})
 
-        decision = self.optimizer.solve(day_data, plan, bridge, initial_state=states, dse_outputs=local_states)
-        verification = self.verifier.verify(decision, bridge, day_data=day_data)
-        review = self.haii.review(
+        decision = self.optimizer.solve(
+            day_data,
+            plan,
+            bridge,
+            initial_state=states,
+            dse_outputs=local_states,
+            memory_context=memory_context,
+        )
+        verification = self.verifier.verify(decision, bridge, day_data=day_data, memory_context=memory_context)
+        review = self.hcii.review(
             verification,
             operator_message=operator_message,
             dispatch_summary={'grid_buy': decision.grid_buy, 'grid_sell': decision.grid_sell},
+            memory_context=memory_context,
         )
         execution = self.executor.execute(
             decision if verification.accepted and review.approved else self._hold_decision(num_pdns, horizon, states)
         )
-        feedback = self.evaluate_cycle(day_data, decision, verification.accepted, execution.executed)
+        feedback = self.evaluate_cycle(day_data, decision, verification.accepted and review.approved, execution.executed)
+        feedback_record = self._feedback_to_dict(feedback)
+        workflow_summary = self._workflow_summary(orchestration_plan)
+        solver_result = self.optimizer.last_solver_result
+        warm_start = {'grid_buy': decision.grid_buy} if feedback.accepted else {}
+        solver_trace = {} if solver_result is None else dict(solver_result.diagnostics)
+        self.memory.record_workflow_checkpoint(
+            cycle_id=cycle_id,
+            checkpoints=workflow_summary['checkpoints'],
+            rollback_policy=workflow_summary['rollback_policy'],
+            warm_start=warm_start,
+            solver_trace=solver_trace,
+            accepted=feedback.accepted,
+        )
+        if feedback.accepted:
+            self.memory.record_accepted_case(
+                cycle_id=cycle_id,
+                context_tags=memory_context.get('latest_context', {}).get('event_tags', []),
+                plan_summary=self._plan_summary(plan, plan_obj),
+                bridge_summary=self._bridge_summary(bridge),
+                feedback=feedback_record,
+                workflow_summary=workflow_summary,
+            )
+        else:
+            self.memory.record_failure_case(
+                cycle_id=cycle_id,
+                context_tags=memory_context.get('latest_context', {}).get('event_tags', []),
+                failure_tags=list(verification.failed_constraints),
+                rollback_reason='verification_or_review_rejection',
+                repair_actions=list(review.requested_changes or []),
+                feedback=feedback_record,
+                workflow_summary=workflow_summary,
+            )
+        self.itgc.update_after_cycle(feedback_record)
+        self.memory.update_policy_after_feedback(
+            self.itgc.state.weight_vector,
+            feedback_record,
+            accepted=feedback.accepted,
+            verification_failures=len(verification.failed_constraints),
+        )
         return {
+            'cycle_id': cycle_id,
             'plan': plan,
             'plan_objective': plan_obj,
             'orchestration_plan': orchestration_plan,
@@ -103,9 +140,10 @@ class ITGCAgentSystem:
             'execution': execution,
             'feedback': feedback,
             'orchestrator_trace': self.orchestrator.trace,
+            'memory_context': memory_context,
             'optimization_notes': self.optimizer.last_semantic_notes,
-            'solver_result': self.optimizer.last_solver_result,
-            'states_after': self._apply_first_step(states, decision, verification.accepted and execution.executed),
+            'solver_result': solver_result,
+            'states_after': self._apply_first_step(states, decision, feedback.accepted),
         }
 
     def run_day(
@@ -123,14 +161,7 @@ class ITGCAgentSystem:
         horizon = len(next(iter(day_data.values())))
         dt = self.cfg.get('runtime', {}).get('step_minutes', 15) / 60.0
         if plan_override is None:
-            plan, plan_obj = self.itgc.plan(num_pdns, scenario_bundle=planning_bundle)
-            self.memory.planning_history.append(
-                {
-                    'plan_objective': getattr(plan_obj, 'total_cost', None),
-                    'benders_iterations': getattr(plan_obj, 'benders_iterations', 0),
-                    'cut_count': getattr(plan_obj, 'cut_count', 0),
-                }
-            )
+            plan, plan_obj = self.itgc.plan(num_pdns, scenario_bundle=planning_bundle, memory_context=self.memory.retrieve_context())
         else:
             plan, plan_obj = plan_override, plan_obj_override
         states = initial_states or self._initial_states(plan, num_pdns)
@@ -171,20 +202,16 @@ class ITGCAgentSystem:
             else:
                 rollback_count += 1
                 rejection_streak += 1
-                self.memory.rejected_cycles += 1
-                self.memory.rollback_history.append(
-                    {
-                        'step': start,
-                        'failed_constraints': list(verification.failed_constraints),
-                        'execution': execution.status,
-                    }
-                )
                 self.orchestrator.trigger_rollback(
                     'verification_or_execution_failure',
                     {'step': start, 'constraints': verification.failed_constraints},
                 )
                 if rejection_streak >= 2:
-                    plan, plan_obj = self.itgc.plan(num_pdns, scenario_bundle=planning_bundle)
+                    plan, plan_obj = self.itgc.plan(
+                        num_pdns,
+                        scenario_bundle=planning_bundle,
+                        memory_context=self.memory.retrieve_context(),
+                    )
                     total_benders_iterations += getattr(plan_obj, 'benders_iterations', 0.0)
                     rejection_streak = 0
 
@@ -316,7 +343,8 @@ class ITGCAgentSystem:
                 v2g += (decision.ev_charge[n][h] + decision.ev_discharge[n][h]) * dt
                 renewable += (t.pv + t.wind) * dt
                 used_renewable += max(0.0, (t.pv + t.wind - wc - sc) * dt)
-        accepted = verified and executed and shed <= self.cfg['long_term']['supply_inadequacy_limit']
+        accepted_limit = self.cfg['long_term']['supply_inadequacy_limit'] * self.memory.policy_memory.acceptance_threshold
+        accepted = verified and executed and shed <= accepted_limit
         rollback = not accepted
         return CycleFeedback(
             operating_cost=cost,
@@ -342,13 +370,18 @@ class ITGCAgentSystem:
             for n in range(num_pdns)
         }
 
-    def _build_bridge(self, plan, states, dse_outputs, horizon: int) -> BridgeVariables:
+    def _build_bridge(self, plan, states, dse_outputs, horizon: int, memory_context: Dict[str, Any] | None = None) -> BridgeVariables:
         terminal_soc = {}
         reserve_requirement = {}
         grid_exchange_cap = {}
         ev_energy_requirement = {}
         risk_budget = {}
         system_cap = self.cfg['short_term']['system_import_cap_default']
+        policy = (memory_context or {}).get('policy', {})
+        failure_pressure = (memory_context or {}).get('failure_pressure', 0.0)
+        success_credit = (memory_context or {}).get('success_credit', 0.0)
+        risk_bias = policy.get('risk_bias', 0.0)
+        reserve_bias = policy.get('reserve_bias', 0.0)
 
         for n, state in states.items():
             net_forecast = dse_outputs[n].context['net_load_forecast']
@@ -363,10 +396,11 @@ class ITGCAgentSystem:
             risk_budget[n] = []
             for h in range(horizon):
                 predicted_peak = max(0.0, net_forecast[h]) if h < len(net_forecast) else 0.0
-                risk = min(1.0, max(0.0, state.risk_budget + risk_shift + 0.03 * volatility))
-                terminal_soc[n].append(max(0.18 * plan.battery_energy[n], 0.16 * plan.battery_energy[n] + 0.08 * predicted_peak))
-                reserve_requirement[n].append(max(0.45, 0.35 + 0.08 * predicted_peak + 0.18 * risk))
-                envelope = min(plan.import_cap[n], 0.9 * plan.import_cap[n] + 0.05 * system_cap - 0.03 * volatility)
+                risk = min(1.0, max(0.0, state.risk_budget + risk_shift + 0.03 * volatility + risk_bias + failure_pressure - 0.5 * success_credit))
+                terminal_floor = 0.16 * plan.battery_energy[n] + 0.08 * predicted_peak + 0.04 * reserve_bias * plan.battery_energy[n]
+                terminal_soc[n].append(max(0.18 * plan.battery_energy[n], terminal_floor))
+                reserve_requirement[n].append(max(0.45, 0.35 + 0.08 * predicted_peak + 0.18 * risk + reserve_bias))
+                envelope = min(plan.import_cap[n], 0.9 * plan.import_cap[n] + 0.05 * system_cap - 0.03 * volatility - failure_pressure + 0.4 * success_credit)
                 grid_exchange_cap[n].append(max(1.0, envelope))
                 ev_energy_requirement[n].append(min(max(0.35, 0.25 + 0.55 * mobility_pressure + 0.25 * risk), max(2.0, plan.v2g_ratio[n] * 4.0)))
                 risk_budget[n].append(risk)
@@ -407,9 +441,59 @@ class ITGCAgentSystem:
                 last_voltage=decision.voltage_profile.get(n, [state.last_voltage])[0],
                 last_line_loading=decision.line_loading.get(n, [state.last_line_loading])[0],
             )
-        if accepted:
-            self.memory.accepted_cycles += 1
         return updated
+
+    @staticmethod
+    def _feedback_to_dict(feedback: CycleFeedback) -> Dict[str, Any]:
+        return {
+            'operating_cost': feedback.operating_cost,
+            'curtailed_renewable': feedback.curtailed_renewable,
+            'supply_inadequacy': feedback.supply_inadequacy,
+            'peak_import': feedback.peak_import,
+            'v2g_intensity': feedback.v2g_intensity,
+            'accepted': feedback.accepted,
+            'rollback_triggered': feedback.rollback_triggered,
+            'renewable_utilization': feedback.renewable_utilization,
+            'verification_failures': feedback.verification_failures,
+            'admm_iterations': feedback.admm_iterations,
+            'benders_iterations': feedback.benders_iterations,
+        }
+
+    @staticmethod
+    def _plan_summary(plan, plan_obj) -> Dict[str, Any]:
+        return {
+            'avg_battery_energy': sum(plan.battery_energy.values()) / max(len(plan.battery_energy), 1),
+            'avg_battery_power': sum(plan.battery_power.values()) / max(len(plan.battery_power), 1),
+            'avg_v2g_ratio': sum(plan.v2g_ratio.values()) / max(len(plan.v2g_ratio), 1),
+            'avg_import_cap': sum(plan.import_cap.values()) / max(len(plan.import_cap), 1),
+            'objective': getattr(plan_obj, 'total_cost', None),
+            'benders_iterations': getattr(plan_obj, 'benders_iterations', 0),
+            'cut_count': getattr(plan_obj, 'cut_count', 0),
+        }
+
+    @staticmethod
+    def _bridge_summary(bridge: BridgeVariables) -> Dict[str, Any]:
+        pdns = list(bridge.risk_budget.keys())
+        if not pdns:
+            return {}
+        avg_risk = sum(sum(bridge.risk_budget[n]) / max(len(bridge.risk_budget[n]), 1) for n in pdns) / len(pdns)
+        avg_exchange = sum(sum(bridge.grid_exchange_cap[n]) / max(len(bridge.grid_exchange_cap[n]), 1) for n in pdns) / len(pdns)
+        avg_reserve = sum(sum(bridge.reserve_requirement[n]) / max(len(bridge.reserve_requirement[n]), 1) for n in pdns) / len(pdns)
+        return {
+            'avg_risk_budget': avg_risk,
+            'avg_grid_exchange_cap': avg_exchange,
+            'avg_reserve_requirement': avg_reserve,
+        }
+
+    @staticmethod
+    def _workflow_summary(orchestration_plan: Dict[str, Any]) -> Dict[str, Any]:
+        return {
+            'checkpoints': list(orchestration_plan.get('checkpoints', [])),
+            'rollback_policy': orchestration_plan.get('rollback_policy', 'default_rollback_on_failure'),
+            'parallel_tasks': list(orchestration_plan.get('parallel_tasks', [])),
+            'sequential_tasks': list(orchestration_plan.get('sequential_tasks', [])),
+            'warm_start_available': bool(orchestration_plan.get('warm_start_available', False)),
+        }
 
     def _hold_decision(self, num_pdns: int, horizon: int, states):
         decision = self._empty_decision(num_pdns, horizon)

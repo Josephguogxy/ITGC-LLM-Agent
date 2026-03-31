@@ -55,3 +55,9 @@ agent:
   risk_update_alpha_2: 0.05
   risk_update_alpha_3: 0.08
   default_risk_budget: 0.5
+memory:
+  storage_path: memory_store/agent_memory.json
+  max_state_context: 32
+  max_accepted_cases: 32
+  max_failure_cases: 32
+  max_checkpoints: 32

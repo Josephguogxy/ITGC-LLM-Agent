@@ -22,14 +22,24 @@ class OrchestratorAgent:
         self.llm = llm_service
         self.trace = OrchestratorTrace()
 
-    def build_plan(self, planning_summary: Dict[str, Any], pdn_count: int, horizon: int, runtime_mode: str = 'batch'):
+    def build_plan(
+        self,
+        planning_summary: Dict[str, Any],
+        pdn_count: int,
+        horizon: int,
+        runtime_mode: str = 'batch',
+        memory_context: Dict[str, Any] | None = None,
+    ):
+        checkpoint = (memory_context or {}).get('checkpoint', {})
+        retrieved_checkpoints = list(checkpoint.get('checkpoints', []))
         if self.llm is None:
             result = {
                 'summary': 'LLM disabled, using default workflow plan.',
                 'parallel_tasks': ['dse_update'],
                 'sequential_tasks': ['planning', 'optimization', 'verification', 'execution'],
-                'checkpoints': ['post_planning', 'post_verification'],
+                'checkpoints': list(dict.fromkeys(['post_planning', 'post_verification', *retrieved_checkpoints])),
                 'rollback_policy': 'default_rollback_on_failure',
+                'warm_start_available': bool(checkpoint.get('warm_start_available', False)),
                 'bottlenecks': [],
                 'assumptions': ['deterministic default workflow'],
             }
@@ -41,8 +51,15 @@ class OrchestratorAgent:
                 verification_enabled=self.cfg['agent']['verification_enabled'],
                 human_gate_enabled=self.cfg['agent']['human_gate_enabled'],
                 runtime_mode=runtime_mode,
+                memory_summary={
+                    'recent_failures': (memory_context or {}).get('similar_failures', []),
+                    'recent_successes': (memory_context or {}).get('similar_successes', []),
+                    'checkpoint_memory': checkpoint,
+                },
             )
             result = self.llm.call(system_prompt=SYSTEM_PROMPT, user_prompt=prompt, agent_role='orchestrator').parsed
+        result.setdefault('checkpoints', list(dict.fromkeys(['post_planning', 'post_verification', *retrieved_checkpoints])))
+        result.setdefault('warm_start_available', bool(checkpoint.get('warm_start_available', False)))
         self.trace.llm_summaries.append(result)
         return result
 

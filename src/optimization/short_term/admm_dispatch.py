@@ -22,9 +22,10 @@ class DistributedADMMDispatcher(SolverBackend):
         rho = float(problem.parameters.get("admm_rho", self.rho))
         max_iter = int(problem.parameters.get("admm_max_iter", self.max_iter))
         tol = float(problem.parameters.get("admm_tol", self.tol))
+        warm_start = problem.parameters.get("warm_start_hint", {})
 
         desired = [[0.0] * horizon for _ in range(num_pdns)]
-        consensus = [[0.0] * horizon for _ in range(num_pdns)]
+        consensus = [self._warm_profile(warm_start.get("grid_buy", {}).get(n, []), horizon) for n in range(num_pdns)]
         dual = [[0.0] * horizon for _ in range(num_pdns)]
         residual_trace: List[dict] = []
 
@@ -85,6 +86,13 @@ class DistributedADMMDispatcher(SolverBackend):
                 "system_import_profile": [sum(consensus[n][t] for n in range(num_pdns)) for t in range(horizon)],
             },
         )
+
+    @staticmethod
+    def _warm_profile(values, horizon: int):
+        seq = list(values[:horizon]) if values else []
+        if len(seq) < horizon:
+            seq.extend([0.0] * (horizon - len(seq)))
+        return seq
 
     def _project_imports(self, desired, grid_caps, system_cap):
         num_pdns = len(desired)

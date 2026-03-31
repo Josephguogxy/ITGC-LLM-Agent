@@ -32,6 +32,8 @@ itgc-agent-system/
 |   +-- index.html
 |   +-- script.js
 |   `-- styles.css
++-- memory_store/
+|   `-- agent_memory.json
 +-- src/
 |   +-- agent/
 |   +-- data/
@@ -52,12 +54,15 @@ itgc-agent-system/
 3. Move to `src/models/long_term.py` and `src/optimization/long_term/benders_planner.py` for the long-horizon planning layer.
 4. Then read `src/models/short_term.py`, `src/optimization/builder.py`, and `src/optimization/short_term/admm_dispatch.py` for the short-horizon dispatch logic.
 5. Use `src/llm/` and `src/agent/prompts.py` to see how semantic reasoning is attached to solver-centered decision making.
+6. Read `src/agent/memory.py` to see how state/context, policy, success, failure, and checkpoint memories are retrieved and written back across cycles.
 
 ## Configuration Notes
 
 - `configs/llm_config.yaml` controls the LLM provider mode.
 - `configs/model_params.yaml` contains long-term, short-term, cost, and agent parameters.
+- `configs/model_params.yaml` now also exposes memory-layer depth for context, success, failure, and checkpoint stores.
 - `configs/runtime.yaml` stores rolling-window and trace-related runtime settings that the framework reads.
+- `memory_store/agent_memory.json` is the file-backed memory store that the system reads and writes during runtime.
 
 ## Curated Release Notes
 
@@ -66,6 +71,10 @@ itgc-agent-system/
 
 ## GitHub Pages
 
-https://josephguogxy.github.io/ITGC-LLM-Agent/
+The `docs/` folder is ready for GitHub Pages. After uploading this folder as a repository:
+
+1. Open the repository settings on GitHub.
+2. Enable Pages from the `main` branch.
+3. Select the `/docs` folder as the publishing source.
 
 The resulting site will present the architecture, module map, and curated repository scope.

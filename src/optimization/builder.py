@@ -9,7 +9,7 @@ class OptimizationProblemBuilder:
     def __init__(self, config: Dict[str, Any]):
         self.cfg = config
 
-    def build(self, day_data, plan, bridge, initial_state=None, dse_outputs=None) -> OptimizationProblem:
+    def build(self, day_data, plan, bridge, initial_state=None, dse_outputs=None, memory_context=None) -> OptimizationProblem:
         num_pdns = len(day_data)
         horizon = len(next(iter(day_data.values())))
         rolling_window_min = self.cfg.get('runtime', {}).get('rolling_window_min', 60)
@@ -72,6 +72,7 @@ class OptimizationProblemBuilder:
                 'admm_rho': self.cfg.get('solver', {}).get('admm_rho', 1.0),
                 'admm_max_iter': self.cfg.get('solver', {}).get('admm_max_iter', 10),
                 'admm_tol': self.cfg.get('solver', {}).get('admm_tol', 1.0e-3),
+                'warm_start_hint': (memory_context or {}).get('checkpoint', {}).get('warm_start', {}),
             },
             forecasts=forecasts,
             constraints=constraints,

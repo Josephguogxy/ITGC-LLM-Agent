@@ -24,8 +24,15 @@ class OptimizationAgent:
         self.last_semantic_notes = {}
         self.last_solver_result = None
 
-    def solve(self, day_data, plan, bridge, initial_state=None, dse_outputs=None):
-        problem = self.builder.build(day_data, plan, bridge, initial_state=initial_state, dse_outputs=dse_outputs)
+    def solve(self, day_data, plan, bridge, initial_state=None, dse_outputs=None, memory_context=None):
+        problem = self.builder.build(
+            day_data,
+            plan,
+            bridge,
+            initial_state=initial_state,
+            dse_outputs=dse_outputs,
+            memory_context=memory_context,
+        )
         if self.llm is not None:
             prompt = OPTIMIZATION_PROMPT_TEMPLATE.format(
                 problem_summary={

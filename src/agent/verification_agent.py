@@ -19,8 +19,15 @@ class VerificationAgent:
         self.cfg = config
         self.llm = llm_service
 
-    def verify(self, decision, bridge, day_data=None):
+    def verify(self, decision, bridge, day_data=None, memory_context: Dict[str, Any] | None = None):
         failed = []
+        failure_pressure = (memory_context or {}).get('failure_pressure', 0.0)
+        policy = (memory_context or {}).get('policy', {})
+        safety_bias = min(1.0, failure_pressure + policy.get('risk_bias', 0.0))
+        line_limit = 1.08 - 0.03 * safety_bias
+        voltage_low = 0.95 + 0.005 * safety_bias
+        voltage_high = 1.05 - 0.003 * safety_bias
+        power_balance_tol = max(0.35, 0.55 - 0.10 * safety_bias)
         for n, seq in decision.grid_buy.items():
             for h, buy in enumerate(seq):
                 if buy > bridge.grid_exchange_cap[n][h] + 1e-9:
@@ -44,11 +51,11 @@ class VerificationAgent:
                     failed.append(f'ev_service_violation_pdn_{n}_h_{h}')
         for n, seq in decision.line_loading.items():
             for h, loading in enumerate(seq):
-                if loading > 1.08:
+                if loading > line_limit:
                     failed.append(f'line_loading_violation_pdn_{n}_h_{h}')
         for n, seq in decision.voltage_profile.items():
             for h, voltage in enumerate(seq):
-                if voltage < 0.95 or voltage > 1.05:
+                if voltage < voltage_low or voltage > voltage_high:
                     failed.append(f'voltage_violation_pdn_{n}_h_{h}')
         if day_data is not None:
             for n, series in day_data.items():
@@ -65,7 +72,7 @@ class VerificationAgent:
                         + decision.load_shed[n][h]
                     )
                     residual = abs(lhs - t.load)
-                    if residual > 0.55:
+                    if residual > power_balance_tol:
                         failed.append(f'power_balance_residual_pdn_{n}_h_{h}')
         risk_notes = []
         if self.llm is not None:
@@ -73,6 +80,11 @@ class VerificationAgent:
                 dispatch_summary={'grid_buy': decision.grid_buy, 'load_shed': decision.load_shed},
                 bridge_summary={'grid_exchange_cap': bridge.grid_exchange_cap, 'ev_energy_requirement': bridge.ev_energy_requirement},
                 measured_state_summary='structured checks already computed in runtime',
+                memory_summary={
+                    'failure_pressure': failure_pressure,
+                    'recent_failures': (memory_context or {}).get('similar_failures', []),
+                    'policy': policy,
+                },
             )
             parsed = self.llm.call(system_prompt=SYSTEM_PROMPT, user_prompt=prompt, agent_role='verification').parsed
             risk_notes = parsed.get('risk_notes', [])

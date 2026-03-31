@@ -11,8 +11,10 @@ The main orchestration entrypoint is `src/agent/framework.py`.
 3. `DSEAgent` prepares local estimated states and forecasts for each PDN.
 4. `OptimizationAgent` builds a short-term optimization problem and delegates numerical solving to the selected backend.
 5. `VerificationAgent` checks whether the dispatch is safe with respect to bridge and network constraints.
-6. `HAIIAgent` injects operator-facing review logic through the LLM layer.
+6. `HCIIAgent` injects operator-facing review logic through the LLM layer.
 7. `ExecutionAgent` applies the accepted decision and feeds the next operational state back to the framework.
+
+Across this loop, `src/agent/memory.py` continuously writes and retrieves five memory types: state/context memory, policy/goal memory, accepted case memory, failure/rollback memory, and workflow/checkpoint memory. The memory layer is file-backed through `memory_store/agent_memory.json`, so experience persists across runs instead of disappearing at process exit. This makes the curated repository reflect memory-driven iterative evolution instead of a one-shot workflow.
 
 ## Core Data Contracts
 
@@ -33,6 +35,7 @@ These types live in `src/models/types.py`.
 - Houses the agent roles defined by the paper.
 - Keeps the control flow readable through small single-purpose classes.
 - Uses prompts only for semantic interpretation; numerical decisions remain solver-centered.
+- Contains the memory-centered evolution layer that writes back successful cases, failure tags, checkpoint traces, and policy updates.
 
 ### `src/models/`
 
@@ -80,7 +83,7 @@ If someone opens the repository for the first time, this reading order works bes
 7. `src/optimization/builder.py`
 8. `src/optimization/short_term/admm_dispatch.py`
 9. `src/agent/verification_agent.py`
-10. `src/agent/haii_agent.py`
+10. `src/agent/hcii_agent.py`
 
 ## Important Limitation In This Curated Export
 

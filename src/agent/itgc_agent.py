@@ -36,19 +36,26 @@ class ITGCAgent:
             knowledge_state={},
         )
 
-    def plan(self, num_pdns: int, scenario_bundle=None):
+    def plan(self, num_pdns: int, scenario_bundle=None, memory_context: Dict[str, Any] | None = None):
+        if memory_context is not None:
+            self._apply_memory_context(memory_context)
         plan, obj = self.planner.solve(num_pdns, scenario_bundle=scenario_bundle, weight_vector=self.state.weight_vector)
-        analysis = self._semantic_analysis(plan)
+        analysis = self._semantic_analysis(plan, memory_context=memory_context)
         self.state.knowledge_state['last_plan_analysis'] = analysis
         return plan, obj
 
-    def _semantic_analysis(self, plan):
+    def _semantic_analysis(self, plan, memory_context: Dict[str, Any] | None = None):
         if self.llm is None:
             return {'summary': 'LLM disabled', 'recommendations': []}
         prompt = ITGC_PROMPT_TEMPLATE.format(
             plan=plan,
             feedback=self.state.knowledge_state.get('last_feedback', {}),
             weight_vector=self.state.weight_vector,
+            memory_summary={
+                'preferred_posture': (memory_context or {}).get('policy', {}).get('preferred_posture', 'balanced'),
+                'similar_successes': (memory_context or {}).get('similar_successes', []),
+                'similar_failures': (memory_context or {}).get('similar_failures', []),
+            },
             config_summary={
                 'budget_total': self.cfg['long_term']['budget_total'],
                 'supply_limit': self.cfg['long_term']['supply_inadequacy_limit'],
@@ -68,3 +75,19 @@ class ITGCAgent:
             self.state.weight_vector['degradation'] += 0.03
         if feedback.get('renewable_utilization', 1.0) < 0.75:
             self.state.weight_vector['renewable'] += 0.05
+
+    def _apply_memory_context(self, memory_context: Dict[str, Any]) -> None:
+        policy = memory_context.get('policy', {})
+        policy_weights = policy.get('weight_vector', {})
+        for key, value in policy_weights.items():
+            current = self.state.weight_vector.get(key, value)
+            self.state.weight_vector[key] = 0.7 * current + 0.3 * value
+        failure_pressure = memory_context.get('failure_pressure', 0.0)
+        success_credit = memory_context.get('success_credit', 0.0)
+        self.state.weight_vector['reliability'] += 0.12 * failure_pressure
+        self.state.weight_vector['renewable'] += 0.04 * max(0.0, failure_pressure - success_credit)
+        self.state.weight_vector['economic'] += 0.05 * success_credit
+        posture = policy.get('preferred_posture', 'balanced')
+        if posture == 'conservative':
+            self.state.weight_vector['reliability'] += 0.05
+            self.state.weight_vector['degradation'] += 0.03
