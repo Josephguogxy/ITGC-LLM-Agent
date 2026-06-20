@@ -1,49 +1,16 @@
-const tabButtons = document.querySelectorAll(".tab-button");
-const sections = document.querySelectorAll(".chapter, .hero");
-const navLinks = document.querySelectorAll("[data-nav]");
-const revealEls = document.querySelectorAll(".reveal");
+const menuButton = document.querySelector(".menu-button");
+const navigation = document.querySelector("#site-nav");
 
-tabButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    const group = button.dataset.group;
-    const target = button.dataset.target;
-
-    document
-      .querySelectorAll(`.tab-button[data-group="${group}"]`)
-      .forEach((item) => item.classList.remove("active"));
-
-    document
-      .querySelectorAll(`.tab-panel[data-group="${group}"]`)
-      .forEach((panel) => panel.classList.remove("active"));
-
-    button.classList.add("active");
-    document.getElementById(target)?.classList.add("active");
-  });
+menuButton?.addEventListener("click", () => {
+  const isOpen = navigation.classList.toggle("open");
+  menuButton.setAttribute("aria-expanded", String(isOpen));
 });
 
-const navObserver = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) {
-        return;
-      }
-
-      const id = entry.target.id;
-      navLinks.forEach((link) => {
-        link.classList.toggle("active", link.getAttribute("href") === `#${id}`);
-      });
-    });
-  },
-  {
-    threshold: 0.35,
-    rootMargin: "-10% 0px -40% 0px",
-  }
-);
-
-sections.forEach((section) => {
-  if (section.id) {
-    navObserver.observe(section);
-  }
+navigation?.querySelectorAll("a").forEach((link) => {
+  link.addEventListener("click", () => {
+    navigation.classList.remove("open");
+    menuButton?.setAttribute("aria-expanded", "false");
+  });
 });
 
 const revealObserver = new IntersectionObserver(
@@ -51,12 +18,11 @@ const revealObserver = new IntersectionObserver(
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         entry.target.classList.add("visible");
+        revealObserver.unobserve(entry.target);
       }
     });
   },
-  {
-    threshold: 0.15,
-  }
+  { threshold: 0.1 }
 );
 
-revealEls.forEach((el) => revealObserver.observe(el));
+document.querySelectorAll(".reveal").forEach((element) => revealObserver.observe(element));
